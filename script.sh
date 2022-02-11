@@ -1,6 +1,6 @@
 #!/bin/sh
-CapsBackspace=0
-SwapEscape=1
+CapsBackspace=1 # change this to 0 to avoid changing caps lock to backspace
+SwapEscape=0 # if this is set to 1 and CapsBackspace to 0, caps lock and escape will be swapped
 InstallDir=/usr/share/kbd/keymaps/i386/colemak-dh
 WD="$(mktemp -d)"
 cd $WD
