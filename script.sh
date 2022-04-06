@@ -22,15 +22,15 @@ chmod 755 "$InstallDir"
 for file in *.map; do gzip "$file"; done
 for file in *.map.gz; do
 	if [ -f "$InstallDir/$file" ]; then
-		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (Y/n): ${COLOROFF}"
+		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (y/N): ${COLOROFF}"
 		read -n 1 -r
 			while [[ ! $REPLY =~ [YyNn]|^$ ]]; do
-				echo -en "\n${YELLOW}${BOLD}Bad answer. Type a \"y\" or \"n\": ${NORM}${COLOROFF}"
+				echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no: ${NORM}${COLOROFF}"
 				read -n 1 -r
 			done
 			case $REPLY in
-				Y|y|'' ) mv "$file" "$InstallDir/"; echo;;
-				N|n ) echo;;
+				Y|y ) mv "$file" "$InstallDir/"; echo;;
+				N|n|'' ) echo;;
 			esac
 	else
 		mv "$file" "$InstallDir/"
