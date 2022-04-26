@@ -7,9 +7,8 @@ WD="$(mktemp -d)"
 # Colors/formatting for echo: {
 RED='\e[31m'
 YELLOW='\e[33m'
-COLOROFF='\e[0m'
+RESET='\e[0m'
 BOLD=$(tput bold)
-NORM=$(tput sgr0)
 # }
 cd $WD
 git clone --depth 1 https://github.com/ColemakMods/mod-dh.git
@@ -25,7 +24,7 @@ for file in *.map.gz; do
 		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (y/N): ${COLOROFF}"
 		read -n 1 -r
 			while [[ ! $REPLY =~ [YyNn]|^$ ]]; do
-				echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no: ${NORM}${COLOROFF}"
+				echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no: ${RESET}"
 				read -n 1 -r
 			done
 			case $REPLY in
