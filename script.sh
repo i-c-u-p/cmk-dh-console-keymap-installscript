@@ -15,27 +15,27 @@ git clone --depth 1 https://github.com/ColemakMods/mod-dh.git
 cd mod-dh/console
 mkdir -p "$InstallDir"
 chmod 755 "$InstallDir"
-if [ $CapsBackspace = 0 ]; then
-	if [ $SwapEscape = 1 ]; then
-		sed -i "/^keycode *1 /s/=.*/= Caps_Lock/;/^keycode *58/s/=.*/= Escape/" *.map
-	else
-		sed -i 's/^keycode *58/! &/' *.map
-	fi
-fi
-[ $SwapLAltLShift = 1 ] && sed -i '/^keycode *42/s/=.*/= Alt/;/^keycode *56/s/=.*/= Shift/' *.map
-for file in *.map; do gzip "$file"; done
-for file in *.map.gz; do
-	if [ -f "$InstallDir/$file" ]; then
-		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (y/N): ${RESET}"
+for file in *.map; do
+	if [ -f "$InstallDir/$file.gz" ]; then
+		echo -en "${RED}The file \"$InstallDir/$file.gz\" exists. Overwrite it? (y/N): ${RESET}"
 		read -n 1 -r
 		while [[ ! $REPLY =~ [YyNn]|^$ ]]; do
 			echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no. ${RESET}"
 			read -n 1 -r
 		done
-		[[ $REPLY =~ Y|y ]] && mv "$file" "$InstallDir/"
-		echo
-	else
-		mv "$file" "$InstallDir/"
+		if [[ $REPLY =~ Y|y ]]; then
+			if [ $CapsBackspace = 0 ]; then
+				if [ $SwapEscape = 1 ]; then
+					sed -i "/^keycode *1 /s/=.*/= Caps_Lock/;/^keycode *58/s/=.*/= Escape/" "$file"
+				else
+					sed -i 's/^keycode *58/! &/' "$file"
+				fi
+			fi
+			[ $SwapLAltLShift = 1 ] && sed -i '/^keycode *42/s/=.*/= Alt/;/^keycode *56/s/=.*/= Shift/' "$file"
+			gzip "$file"
+			mv "$file.gz" "$InstallDir/"
+			echo
+		fi
 	fi
 done
 rm -rf $WD
