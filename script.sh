@@ -7,30 +7,33 @@ WD="$(mktemp -d)"
 # Colors/formatting for echo: {
 RED='\e[31m'
 YELLOW='\e[33m'
-RESET='\e[0m'
-BOLD=$(tput bold)
+BOLD='\e[1m'
+RESET='\e[0m' # Reset text to default appearance
 # }
 cd $WD
 git clone --depth 1 https://github.com/ColemakMods/mod-dh.git
 cd mod-dh/console
 mkdir -p "$InstallDir"
 chmod 755 "$InstallDir"
-[ $CapsBackspace = 0 ] && sed -i '/! Remove this line if you want caps lock unmodified/,+2d' *.map # Delete comment and the 2 lines below it
-[ $CapsBackspace = 0 ] && [ $SwapEscape = 1 ] && sed -i "s/keycode   1 = Escape/keycode   1 = Caps_Lock/" *.map && echo "keycode  58 = Escape" | tee -a *.map >/dev/null
-[ $SwapLAltLShift = 1 ] && sed -i -e 's/^keycode  42 = Shift/keycode  42 = Alt/g;s/^keycode  56 = Alt/keycode  56 = Shift/g' *.map
+if [ $CapsBackspace = 0 ]; then
+	if [ $SwapEscape = 1 ]; then
+		sed -i "/^keycode *1 /s/=.*/= Caps_Lock/;/^keycode *58/s/=.*/= Escape/" *.map
+	else
+		sed -i 's/^keycode *58/! &/' *.map
+	fi
+fi
+[ $SwapLAltLShift = 1 ] && sed -i '/^keycode *42/s/=.*/= Alt/;/^keycode *56/s/=.*/= Shift/' *.map
 for file in *.map; do gzip "$file"; done
 for file in *.map.gz; do
 	if [ -f "$InstallDir/$file" ]; then
-		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (y/N): ${COLOROFF}"
+		echo -en "${RED}The file \"$InstallDir/$file\" exists. Overwrite it? (y/N): ${RESET}"
 		read -n 1 -r
-			while [[ ! $REPLY =~ [YyNn]|^$ ]]; do
-				echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no: ${RESET}"
-				read -n 1 -r
-			done
-			case $REPLY in
-				Y|y ) mv "$file" "$InstallDir/"; echo;;
-				N|n|'' ) echo;;
-			esac
+		while [[ ! $REPLY =~ [YyNn]|^$ ]]; do
+			echo -en "\n${YELLOW}${BOLD}Bad answer. Type \"y\" for yes, or \"n\" (or leave blank) for no. ${RESET}"
+			read -n 1 -r
+		done
+		[[ $REPLY =~ Y|y ]] && mv "$file" "$InstallDir/"
+		echo
 	else
 		mv "$file" "$InstallDir/"
 	fi
