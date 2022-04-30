@@ -5,4 +5,4 @@ git clone https://github.com/i-c-u-p/cmk-dh-console-keymap-installscript
 cd cmk-dh-console-keymap-installscript
 sudo ./script.sh
 ```
-**Dependencies:** GNU coreutils
+**Dependencies:** Git, GNU coreutils
