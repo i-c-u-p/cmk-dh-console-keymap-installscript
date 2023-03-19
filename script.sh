@@ -11,10 +11,8 @@ BOLD='\e[1m'
 RESET='\e[0m' # Reset text to default appearance
 # }
 cd $WD
-git clone --depth 1 --filter=tree:0 --sparse https://github.com/ColemakMods/mod-dh
-cd mod-dh
-git sparse-checkout set console
-cd console
+git clone --depth 1 https://github.com/ColemakMods/mod-dh.git
+cd mod-dh/console
 mkdir -p "$InstallDir"
 chmod 755 "$InstallDir"
 for file in *.map; do
